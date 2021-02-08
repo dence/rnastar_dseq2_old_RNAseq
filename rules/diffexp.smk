@@ -44,7 +44,7 @@ rule deseq2_init:
 	input:
 		counts="results/counts/all.tsv"
 	output:
-		"results/deseq2/all.rds"
+		temp("results/deseq2/all.rds")
 	params:
 		samples=config["samples"]
 	conda:
@@ -57,7 +57,7 @@ rule deseq2_init:
 	shell:
 		"""
 		module load R;
-		Rscript ../scripts/deseq2-init.R {input.counts} {output} {params.samples} {log} {threads}
+		Rscript scripts/deseq2-init.R {input.counts} {output} {params.samples} {log} {threads} &> {log}
 		"""
 
 rule pca:
@@ -71,8 +71,13 @@ rule pca:
 		"../envs/deseq2.yaml"
 	log:
 		"logs/pca.log"
-	script:
-		"../scripts/plot-pca.R"
+	#script:
+	#	"../scripts/plot-pca.R"
+	shell:
+		"""
+		module load R;
+		Rscript scripta/plot-pca.R {input} {output} {params.pca_labels} {log}
+		"""
 
 def get_contrast(wildcards):
 	return config["diffexp"]["contrasts"][wildcards.contrast]
@@ -84,11 +89,18 @@ rule deseq2:
 		table=report("results/diffexp/{contrast}.diffexp.tsv", "../report/diffexp.rst"),
 		ma_plot=report("results/diffexp/{contrast}.ma-plot.svg", "../report/ma.rst"),
 	params:
-		contrast=get_contrast
+		contrast=get_contrast,
+		config_yaml="config.yaml"
+
 	conda:
 		"../envs/deseq2.yaml"
 	log:
 		"logs/deseq2/{contrast}.diffexp.log"
 	threads: get_deseq2_threads
-	script:
-		"../scripts/deseq2.R"
+	#script:
+	#	"../scripts/deseq2.R"
+	shell:
+		"""
+		module load R;
+		Rscript scripts/deseq2.R {input} {output.table} {output.ma_plot} {params.config_yaml} {log} {threads}
+		"""

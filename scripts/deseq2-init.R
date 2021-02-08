@@ -15,6 +15,7 @@ sink(log)
 sink(log, type="message")
 
 library("DESeq2")
+library(dplyr)
 
 parallel <- FALSE
 if (threads > 1) {
@@ -29,8 +30,11 @@ if (threads > 1) {
 cts <- read.table(counts_file, header=TRUE, row.names="gene", check.names=FALSE)
 coldata <- read.table(sample_file, header=TRUE, row.names="sample", check.names=FALSE)
 
-dds <- DESeqDataSetFromMatrix(countData=cts,
-                              colData=coldata,
+sorted_cts <- cts[order(names(cts))]
+
+
+dds <- DESeqDataSetFromMatrix(countData= cts[order(names(cts))],
+                              colData=coldata[order(row.names(coldata)),],
                               design=~ condition)
 
 # remove uninformative columns
