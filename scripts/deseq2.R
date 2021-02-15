@@ -28,7 +28,7 @@ dds <- readRDS(rds)
 
 library("yaml")
 config_yaml <- read_yaml(params.config_yaml)
-contrast <- c("condition", as.vector(config_yaml$diffexp$contrasts$"MeJAtreated-vs-MeJAcontrol"))
+contrast <- c("condition", as.vector(config_yaml$diffexp$contrasts$"MJC_cambium-vs-MJ_cambium"))
 res <- results(dds, contrast=contrast, parallel=parallel)
 # shrink fold changes for lowly expressed genes
 res <- lfcShrink(dds, contrast=contrast, res=res,type="normal")
@@ -39,7 +39,7 @@ res <- res[order(res$padj),]
 
 # store results
 svg(output_ma_plot)
-plotMA(res, ylim=c(-2,2))
+plotMA(res, ylim=c(-8,8))
 dev.off()
 
 write.table(as.data.frame(res), file=output_table)

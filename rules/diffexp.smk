@@ -104,3 +104,19 @@ rule deseq2:
 		module load R;
 		Rscript scripts/deseq2.R {input} {output.table} {output.ma_plot} {params.config_yaml} {log} {threads}
 		"""
+rule norm_counts_table:
+	input:
+		"results/deseq2/all.rds"
+	output:
+		"results/counts/all.norm_counts.tsv"
+	log:
+		"logs/deseq2/norm_counts.log"
+	conda:
+		"../envs/pandas.yaml"
+	#script:
+		"../scripts/normalized_counts.R"
+	shell:
+		"""
+		module load R;
+		Rscript scripts/normalized_counts.R {input} {output} {log}
+		"""

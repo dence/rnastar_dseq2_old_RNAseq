@@ -1,5 +1,6 @@
 # path or URL to sample sheet (TSV format, columns: sample, condition, ...)
-samples: samples.tsv
+#samples: samples.tsv
+samples: MJC_cambium_vs_MJ_cambium.samples.tsv
 # path or URL to sequencing unit sheet (TSV format, columns: sample, unit, fq1, fq2,
 # strandedness). Units are technical replicates (e.g. lanes, or resequencing of the
 # same biological sample).If the column "strandedness" is present (which is optional),
@@ -9,7 +10,7 @@ samples: samples.tsv
 
 #units: Dec_2020_units.tsv
 #units: Jan_2021_units.tsv
-units: Jan_29_2021_units.tsv
+units: MJC_cambium_vs_MJ_cambium.units.tsv
 
 
 
@@ -43,15 +44,15 @@ ref:
 pca:
   labels:
     # columns of sample sheet to use for PCA
+    - condition
     - tissue
-    - treatment
 
 diffexp:
   # contrasts for the deseq2 results method
   contrasts:
-    treated-vs-untreated:
-      - MeJAtreated
-      - MeJAcontrol
+    MJC_cambium-vs-MJ_cambium:
+      - MJC_cambium
+      - MJ_cambium
     #cambium-vs-stem:
     #  - cambium
     #  - stem
